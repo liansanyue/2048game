@@ -8,7 +8,7 @@
 		margin: 0 auto;
 		width: 400px;
 		height: 400px;
-		border:5px dotted #ccc;
+		border:4px dotted #ccc;
 		text-align: center;
 		padding: 20px;
 		margin-top: 100px;
@@ -34,24 +34,28 @@ span{
 <body>
 <div id="draw"></div>
 <script type="text/javascript">
-var arr=[
-[0,0,0,0,0,0],
-[0,0,0,0,0,0],
-[0,0,0,0,0,0],
-[0,0,0,0,0,0],
-[0,0,0,0,0,0],
-[0,0,0,0,0,0]
-];
+var arr=[];
 var arr0=[];
+var _SIZE_=6;
+init(_SIZE_);
 draw(arr);
 randomarr(arr);
+function init(len){
+	 
+	for(var i=0;i<len;i++){
+			arr[i]=new Array();
 
+		for(var j=0;j<len;j++){
+			arr[i][j]=0;
+		}
+	}
+}
 function draw(arr){
 	
 	var str="";
 	var color,color1,color2,color3;
-	for(var i=0,leni=arr.length;i<leni;i++){
-		for(var j=0,lenj=arr[i].length;j<lenj;j++)
+	for(var i=0,leni=_SIZE_;i<leni;i++){
+		for(var j=0,lenj=_SIZE_;j<lenj;j++)
 		{    color1="ff"
 			 color2=((arr[i][j]*2)%10<10? 10+(arr[i][j]*3)%50:(arr[i][j]*4)%10) 
 			 color3=((arr[i][j]*3)%10<10? 15+(arr[i][j]*4)%40:(arr[i][j]*3)%10) 
@@ -69,8 +73,8 @@ document.getElementById("draw").innerHTML=str;
 }
 function randomarr(arr){
 arr0=[];
-for(var i=0,leni=arr.length;i<leni;i++){
-		for(var j=0,lenj=arr[i].length;j<lenj;j++)
+for(var i=0,leni=_SIZE_;i<leni;i++){
+		for(var j=0,lenj=_SIZE_;j<lenj;j++)
 		{ 
 			if(arr[i][j]==0){
 				arr0[arr0.length]=[i,j]; 
@@ -80,8 +84,10 @@ for(var i=0,leni=arr.length;i<leni;i++){
 		 
 	}
 	 
-   var l=Math.round(Math.random()*arr0.length-1);    
+   var l=Math.round((Math.random()*(arr0.length-1)));    
    var x=arr0[l];
+   // console.log(arr0);
+   console.log(l);
    arr[x[0]][x[1]]=2;
    draw(arr);
 }
@@ -111,7 +117,7 @@ document.onkeydown=function(e){
 	if(e.keyCode==39){//向右键
 	if(rightadd(arr)){
 	randomarr(arr);
-		
+
 	}
     return;     
 	}
@@ -120,11 +126,11 @@ document.onkeydown=function(e){
 
 function downadd(arr){
 	var flag=false;
-	for(var k=0;k<6;k++){
+	for(var k=0;k<_SIZE_;k++){
 
-		for(var i=5;i>=0;i--){
+		for(var i=(_SIZE_-1);i>=0;i--){
 			var j=i;
-		  while(j<5&&arr[j][k]!=0){
+		  while(j<(_SIZE_-1)&&arr[j][k]!=0){
 			 	if(arr[j+1][k]==0){
 			 			arr[j+1][k]=arr[j][k];
 			 			arr[j][k]=0;
@@ -147,9 +153,9 @@ function downadd(arr){
 }
 function upadd(arr){
 	var flag=false;
-	for(var k=0;k<6;k++){
+	for(var k=0;k<_SIZE_;k++){
 
-		for(var i=0;i<6;i++){
+		for(var i=0;i<_SIZE_;i++){
 			var j=i;
 		  while(j>0&&arr[j][k]!=0){
 			 	if(arr[j-1][k]==0){
@@ -174,11 +180,11 @@ function upadd(arr){
 }
 function rightadd(arr){
 	var flag=false;
-	for(var k=0;k<6;k++){
+	for(var k=0;k<_SIZE_;k++){
 
-		for(var i=5;i>=0;i--){
+		for(var i=(_SIZE_-1);i>=0;i--){
 			var j=i;
-		  while(j<5&&arr[k][j]!=0){
+		  while(j<(_SIZE_-1)&&arr[k][j]!=0){
 		  	 
 			 	if(arr[k][j+1]==0){
 			 			arr[k][j+1]=arr[k][j];
@@ -202,9 +208,9 @@ function rightadd(arr){
 }
 function leftadd(arr){
 	var flag=false;
-	for(var k=0;k<6;k++){
+	for(var k=0;k<_SIZE_;k++){
 
-		for(var i=0;i<6;i++){
+		for(var i=0;i<_SIZE_;i++){
 			var j=i;
 // var j=i;console.log(k+","+j+"->"+arr[k][j]);
 		  while(j>0&&arr[k][j]!=0){
