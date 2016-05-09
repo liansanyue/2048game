@@ -3,78 +3,140 @@
 <head>
 <meta charset="utf-8"/>
 	<title>2048</title>
-	<style type="text/css">
-	#draw{
-		margin: 0 auto;
-		width: 400px;
-		height: 400px;
-		border:4px dotted #ccc;
-		text-align: center;
-		padding: 20px;
-		margin-top: 100px;
-	}
-span{
-	display: inline-block;
-	padding: 0;
-	margin: 2px;
-	width: 60px;
-	height: 60px;
-	overflow: hidden;
-	line-height: 60px;
-	background-color: #ccc;
-	border-radius: 5px;
-	text-align: center;
-	color: #fff;
-	font-weight: 700;
-	font-size: 18px;
-}
+	<meta name="viewport" content="width=device-width,user-scalable=no" />
 
+	<style>
+
+	body,html{
+		margin: 0;
+		padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+	}
+	body {
+    position:fixed;
+    overflow-y:hidden;
+    overflow-x:hidden;
+}
+	span{
+		display: inline-block;
+		padding: 0;
+		margin: 2px;
+		overflow: hidden;
+		-webkit-overflow: hidden;
+		text-overflow:clip;
+		background-color: #ccc;
+		border-radius: 5px;
+		text-align: center;
+		color: #fff;
+		font-weight: 700;
+		font-size: 18px;
+		float: left;
+	position: relative;	
+    -webkit-overflow-y:hidden;
+    -webkit-overflow-x:hidden;
+
+	}
+	span:after{
+		clear: both;
+		content: "\200B";
+		height: 0;
+		visibility: hidden;
+		display: block;
+	}
+@media screen and (max-width:500px){
+	 
+	#main{
+		 
+		width: 100%;
+		height: 100%;
+	 
+		text-align: center;
+		padding: 0px;
+		
+		position: relative;
+		overflow: hidden;
+	}
+
+}
+@media screen and (min-width:500px){
+	 
+	#main{
+		width: 400px;
+		height: 400px; 
+		padding: 30px;
+		margin: 0 auto;
+		text-align: center;
+		margin-top: 100px;
+		position: relative;
+	}
+
+}
+#draw{position: absolute;left:0;right: 0;top:0;bottom: 0;margin: auto}
 	</style>
+
 </head>
 <body>
+<div id="main">
 <div id="draw"></div>
+</div>
 <script type="text/javascript">
-var arr=[];
-var arr0=[];
-var _SIZE_=6;
-init(_SIZE_);
+var arr=[];//游戏表示数组
+var arr0=[];//值为0的点的集合
+var _SIZEX_=4,_SIZEY_=4;//游戏数组的大小
+var drawDiv=document.getElementById("draw");
+var mainDiv=document.getElementById("main");
+
+init(_SIZEX_);
 draw(arr);
 randomarr(arr);
 function init(len){
-	 
-	for(var i=0;i<len;i++){
+	// var c=-4
+	for(var i=0;i<_SIZEY_;i++){
 			arr[i]=new Array();
 
 		for(var j=0;j<len;j++){
+			// arr[i][j]=c++<0?0:c;
 			arr[i][j]=0;
 		}
 	}
+	 drawDiv.style.width=mainDiv.offsetWidth-10+"px";
+	 drawDiv.style.height=mainDiv.offsetWidth-10+"px";////如果_SIZEY_等于_SIZEX_
+	 // drawDiv.style.height=mainDiv.offsetHeight-10+"px"; //如果_SIZEY_大于_SIZEX_
 }
+ 
+ 
 function draw(arr){
 	
 	var str="";
 	var color,color1,color2,color3;
-	for(var i=0,leni=_SIZE_;i<leni;i++){
-		for(var j=0,lenj=_SIZE_;j<lenj;j++)
-		{    color1="ff"
-			 color2=((arr[i][j]*2)%10<10? 10+(arr[i][j]*3)%50:(arr[i][j]*4)%10) 
-			 color3=((arr[i][j]*3)%10<10? 15+(arr[i][j]*4)%40:(arr[i][j]*3)%10) 
+
+	var spanWidth=drawDiv.offsetWidth/_SIZEX_-4+"px";
+	for(var i=0,leni=_SIZEY_;i<leni;i++){
+		for(var j=0,lenj=_SIZEX_;j<lenj;j++)
+		{    color1="ff";
+	         color2=arr[i][j]<10? arr[i][j]+"0": arr[i][j]%100;
+	         color3=arr[i][j]<10? "a"+arr[i][j]: (arr[i][j]+6)%100;
+			 // color2=((arr[i][j]*2)%10<10? 10+(arr[i][j]*3)%40:(arr[i][j]*4)%10) ;
+			 // color3=((arr[i][j]*3)%10<10? 15+(arr[i][j]*4)%40:(arr[i][j]*3)%10) ;
 			 color="#"+color1+color2+color3;
 			if(arr[i][j]==0){
 				color="#ccc"
 			}
-			str+="<span style='background-color:"+color+"'>"+(arr[i][j]==0? ' ':arr[i][j])+"</span>";
+			str+="<span style='background-color:"+color+";width:"+spanWidth+";height:"+spanWidth+";line-height:"+spanWidth+"'>"+(arr[i][j]==0? ' ':arr[i][j])+"</span>";
 
 		}
 		str+="<br/>"
 	} 
-document.getElementById("draw").innerHTML=str;
+drawDiv.innerHTML=str;
 
 }
 function randomarr(arr){
 arr0=[];
-for(var i=0,leni=_SIZE_;i<leni;i++){
-		for(var j=0,lenj=_SIZE_;j<lenj;j++)
+
+for(var i=0,leni=_SIZEY_;i<leni;i++){
+		for(var j=0,lenj=_SIZEX_;j<lenj;j++)
 		{ 
 			if(arr[i][j]==0){
 				arr0[arr0.length]=[i,j]; 
@@ -86,9 +148,9 @@ for(var i=0,leni=_SIZE_;i<leni;i++){
 	 
    var l=Math.round((Math.random()*(arr0.length-1)));    
    var x=arr0[l];
-   // console.log(arr0);
-   console.log(l);
-   arr[x[0]][x[1]]=2;
+   var newdata=[2,2,2,2,2,4];
+   arr[x[0]][x[1]]=newdata[Math.round(Math.random()*5)];
+
    draw(arr);
 }
 document.onkeydown=function(e){
@@ -97,6 +159,7 @@ document.onkeydown=function(e){
 	 if(downadd(arr)){
 	 	randomarr(arr); 
 	 }
+   if(isfail())alert("游戏结束！");
 	 	
      return;
 	}
@@ -105,6 +168,8 @@ document.onkeydown=function(e){
 	randomarr(arr);
 
 	}
+   if(isfail())alert("游戏结束！");
+
     return;   
 	} 
 	if(e.keyCode==37){//向左键
@@ -112,6 +177,8 @@ document.onkeydown=function(e){
 	randomarr(arr);
 
 	}
+   if(isfail())alert("游戏结束！");
+
     return;     
 	}
 	if(e.keyCode==39){//向右键
@@ -119,6 +186,8 @@ document.onkeydown=function(e){
 	randomarr(arr);
 
 	}
+   if(isfail())alert("游戏结束！");
+
     return;     
 	}
 }
@@ -126,11 +195,11 @@ document.onkeydown=function(e){
 
 function downadd(arr){
 	var flag=false;
-	for(var k=0;k<_SIZE_;k++){
+	for(var k=0;k<_SIZEX_;k++){
 
-		for(var i=(_SIZE_-1);i>=0;i--){
+		for(var i=(_SIZEY_-1);i>=0;i--){
 			var j=i;
-		  while(j<(_SIZE_-1)&&arr[j][k]!=0){
+		  while(j<(_SIZEY_-1)&&arr[j][k]!=0){
 			 	if(arr[j+1][k]==0){
 			 			arr[j+1][k]=arr[j][k];
 			 			arr[j][k]=0;
@@ -153,9 +222,9 @@ function downadd(arr){
 }
 function upadd(arr){
 	var flag=false;
-	for(var k=0;k<_SIZE_;k++){
+	for(var k=0;k<_SIZEX_;k++){
 
-		for(var i=0;i<_SIZE_;i++){
+		for(var i=0;i<_SIZEY_;i++){
 			var j=i;
 		  while(j>0&&arr[j][k]!=0){
 			 	if(arr[j-1][k]==0){
@@ -180,11 +249,11 @@ function upadd(arr){
 }
 function rightadd(arr){
 	var flag=false;
-	for(var k=0;k<_SIZE_;k++){
+	for(var k=0;k<_SIZEY_;k++){
 
-		for(var i=(_SIZE_-1);i>=0;i--){
+		for(var i=(_SIZEX_-1);i>=0;i--){
 			var j=i;
-		  while(j<(_SIZE_-1)&&arr[k][j]!=0){
+		  while(j<(_SIZEX_-1)&&arr[k][j]!=0){
 		  	 
 			 	if(arr[k][j+1]==0){
 			 			arr[k][j+1]=arr[k][j];
@@ -208,9 +277,9 @@ function rightadd(arr){
 }
 function leftadd(arr){
 	var flag=false;
-	for(var k=0;k<_SIZE_;k++){
+	for(var k=0;k<_SIZEY_;k++){
 
-		for(var i=0;i<_SIZE_;i++){
+		for(var i=0;i<_SIZEX_;i++){
 			var j=i;
 // var j=i;console.log(k+","+j+"->"+arr[k][j]);
 		  while(j>0&&arr[k][j]!=0){
@@ -231,6 +300,133 @@ function leftadd(arr){
 	draw(arr);
 	return flag;
 }
+//判断是否输了
+function isfail(){
+	  arr0=[];
+   for(var i=0,leni=_SIZEY_;i<leni;i++){
+		for(var j=0,lenj=_SIZEX_;j<lenj;j++)
+		{ 
+			if(arr[i][j]==0){
+				arr0[arr0.length]=[i,j]; 
+			}
+
+		}
+		 
+	}
+	
+if(arr0.length!=0){
+	return false;
+}else{
+	var fail=true;
+ for(var i=0,leni=_SIZEY_;i<leni;i++){
+		for(var j=0,lenj=_SIZEX_;j<lenj;j++)
+		{ 
+			if(j==0&&i!=(leni-1)){
+			
+				if(arr[i][j]==arr[i+1][j]){
+					fail=false;return fail;
+				
+			           }	
+			}else {
+				if(i==(leni-1)){
+					if(arr[i][j]==arr[i][j-1]){
+					fail=false;return fail;}
+				     
+				}else{
+							if(arr[i][j]==arr[i+1][j]||arr[i][j]==arr[i][j-1]){
+							fail=false;return fail; }
+						
+				}
+			
+            }
+		    
+	  }
+		 
+}
+	return fail;
+}
+return;
+}
+//触摸------------------------------------------------------------------------
+//返回角度
+function GetSlideAngle(dx, dy) {
+    return Math.atan2(dy, dx) * 180 / Math.PI;
+}
+ 
+//根据起点和终点返回方向 1：向上，2：向下，3：向左，4：向右,0：未滑动
+function GetSlideDirection(startX, startY, endX, endY) {
+    var dy = startY - endY;
+    var dx = endX - startX;
+    var result = 0;
+ 
+    //如果滑动距离太短
+    if (Math.abs(dx) < 2 && Math.abs(dy) < 2) {
+        return result;
+    }
+ 
+    var angle = GetSlideAngle(dx, dy);
+    if (angle >= -45 && angle < 45) {
+        result = 4;
+    } else if (angle >= 45 && angle < 135) {
+        result = 1;
+    } else if (angle >= -135 && angle < -45) {
+        result = 2;
+    }
+    else if ((angle >= 135 && angle <= 180) || (angle >= -180 && angle < -135)) {
+        result = 3;
+    }
+ 
+    return result;
+}
+ function test(startX, startY, endX, endY){
+ 	console.log("startX: "+startX+" startY: "+startY+" endX: "+endX+" endY: "+endY);
+ }
+//滑动处理
+var startX, startY;
+document.addEventListener('touchstart', function (ev) {
+    startX = ev.touches[0].pageX;
+    startY = ev.touches[0].pageY;   
+    ev.preventDefault();
+}, false);
+document.addEventListener('touchend', function (ev) {
+    var endX, endY;
+    endX = ev.changedTouches[0].pageX;
+    endY = ev.changedTouches[0].pageY;
+     ev.preventDefault();
+    var direction = GetSlideDirection(startX, startY, endX, endY);
+    // test(startX, startY, endX, endY)
+    switch (direction) {
+        case 0:
+            // console.log("没滑动");
+            break;
+        case 1:
+            if(upadd(arr)){
+			 	randomarr(arr); 
+			 }
+	 	   if(isfail())alert("游戏结束！");
+            break;
+        case 2:
+           if(downadd(arr)){
+			 	randomarr(arr); 
+			 }
+			 	
+            break;
+        case 3:
+           if(leftadd(arr)){
+		 	randomarr(arr); 
+		 }
+		 	 if(isfail())alert("游戏结束！");
+            break;
+        case 4:
+           if(rightadd(arr)){
+		 	randomarr(arr); 
+		 }
+		  if(isfail())alert("游戏结束！");
+            break;
+        default: 
+        break;           
+    }   
+}, false);
 </script>
 </body>
 </html>
