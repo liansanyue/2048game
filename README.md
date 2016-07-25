@@ -2,4 +2,4 @@
 ###  [2048][1]
 
 
-  [1]:liansanyue.github.io/2048game/
+  [1]:https://liansanyue.github.io/2048game/
